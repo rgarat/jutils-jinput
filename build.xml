@@ -118,6 +118,12 @@
 	<target name="sourceartifact" depends="init">
 		<jar jarfile="bin/jutils-sources.jar" compress="true" duplicate="preserve" basedir="src/java">
             <include name="net/java/**"/>
+			<exclude name="**/*.java"/>
+            <exclude name="**/*.form"/>
+            <exclude name="myapp.mf"/>
+            <exclude name="myapp.jar"/>
+            <exclude name="apidoc"/>
+	        <exclude name="**/plugins/test/*Plugin.class"/>
         </jar>
 	</target>
 	
