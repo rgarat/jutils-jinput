@@ -1,0 +1,10 @@
+# /
+/classes
+/jutils.jpx
+
+# /src/tests/test_plugins/
+/src/tests/test_plugins/test_plugins.jar
+
+/apidocs/
+/bin/jutils.jar
+
