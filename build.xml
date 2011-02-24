@@ -106,6 +106,23 @@
             </sourcepath>
         </javadoc>
     </target>
+	
+	<target name="javadocartifact" depends="javadoc">
+		<jar jarfile="bin/jutils-javadoc.jar" compress="true" duplicate="preserve">
+			<fileset dir="apidocs">
+				<include name="**/*" />
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="sourceartifact" depends="init">
+		<jar jarfile="bin/jutils-sources.jar" compress="true" duplicate="preserve" basedir="src/java">
+            <include name="net/java/**"/>
+        </jar>
+	</target>
+	
+	<target name="mavendist" depends="all, javadocartifact, sourceartifact">
+	</target>
 
     <target name="clean" depends="init" description="Clean all build products.">
         <delete>
