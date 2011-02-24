@@ -5,7 +5,7 @@
 <!-- If not, you may prefer to adjust the basedir, or move some directories around. -->
 <!-- The idea is that both Ant and NetBeans have to know what the package root is -->
 <!-- for the classes in your application. -->
-<project name="utils.jar" basedir="." default="all">
+<project name="utils.jar" basedir="." default="all" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
     <!-- Don't worry if you don't know the Ant syntax completely or need help on some tasks! -->
     <!-- The standard Ant documentation is bundled. See Help | Help Sets | Ant 1.4.1 Manual. -->
@@ -127,7 +127,57 @@
         </jar>
 	</target>
 	
-	<target name="mavendist" depends="all, javadocartifact, sourceartifact">
+	<target name="mvndist" depends="all, javadocartifact, sourceartifact">
+		<copy todir="bin" file="jutils.pom" />
+	</target>
+	
+	<property name="repository.url"			value="file:///tmp/m2repo" />
+	<property name="repository.id"		value="tmprepoid" />
+		
+	<target name="mvninstall" depends="mvndist">
+		<antcall target="mvnexecute">
+			<param name="mvncommand" value="org.apache.maven.plugins:maven-install-plugin:2.3.1:install-file"/>
+		</antcall>
+	</target>
+	
+	<target name="mvndeploy" depends="mvndist">
+		<antcall target="mvnexecute">
+			<param name="mvncommand" value="org.apache.maven.plugins:maven-gpg-plugin:1.1:sign-and-deploy-file"/>
+		</antcall>
+	</target>
+	
+	<target name="mvnexecute">
+        <!-- jutils.jar -->    
+        
+		<artifact:mvn>
+			<arg value="${mvncommand}" />
+			<arg value="-Durl=${repository.url}" />
+			<arg value="-DrepositoryId=${repository.id}" />
+			<arg value="-DpomFile=bin/jutils.pom" />
+			<arg value="-Dfile=bin/jutils.jar" />
+            <arg value="-Pjutilsgpg" />
+		</artifact:mvn>
+		
+		<artifact:mvn>
+			<arg value="${mvncommand}" />
+			<arg value="-Durl=${repository.url}" />
+			<arg value="-DrepositoryId=${repository.id}" />
+			<arg value="-DpomFile=bin/jutils.pom" />
+			<arg value="-Dfile=bin/jutils-sources.jar" />
+			<arg value="-Dclassifier=sources" />
+            <arg value="-Pjutilsgpg" />
+		</artifact:mvn>
+		
+		<artifact:mvn>
+			<arg value="${mvncommand}" />
+			<arg value="-Durl=${repository.url}" />
+			<arg value="-DrepositoryId=${repository.id}" />
+			<arg value="-DpomFile=bin/jutils.pom" />
+			<arg value="-Dfile=bin/jutils-javadoc.jar" />
+			<arg value="-Dclassifier=javadoc" />
+            <arg value="-Pjutilsgpg" />
+		</artifact:mvn>
+				
 	</target>
 
     <target name="clean" depends="init" description="Clean all build products.">
